@@ -16,50 +16,58 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Download six missing product images
+      - name: Replace Ryukakusan image with validated image file
         shell: bash
         run: |
           set -u
           mkdir -p assets/donki/products
           : > assets/donki/products/FAILED.txt
+          rm -f assets/donki/products/04-ryukakusan.jpg
 
-          grab() {
+          grab_image() {
             out="$1"; shift
-            rm -f "assets/donki/products/$out"
             for url in "$@"; do
               echo "Trying $out <- $url"
-              if curl -fL --retry 2 --connect-timeout 10 --max-time 45 -A 'Mozilla/5.0' -e 'https://www.google.com/' "$url" -o "assets/donki/products/$out"; then
-                if [ -s "assets/donki/products/$out" ]; then
-                  echo "OK $out"
-                  return 0
-                fi
+              tmp="assets/donki/products/${out}.tmp"
+              rm -f "$tmp"
+              if curl -fL --retry 2 --connect-timeout 10 --max-time 45 -A 'Mozilla/5.0' -e 'https://www.google.com/' "$url" -o "$tmp"; then
+                mime=$(file -b --mime-type "$tmp" || true)
+                echo "Downloaded MIME: $mime"
+                case "$mime" in
+                  image/jpeg|image/png|image/webp|image/gif)
+                    mv "$tmp" "assets/donki/products/$out"
+                    echo "OK $out"
+                    return 0
+                    ;;
+                  *)
+                    echo "Rejected non-image response: $mime"
+                    rm -f "$tmp"
+                    ;;
+                esac
               fi
-              rm -f "assets/donki/products/$out"
             done
             echo "$out" >> assets/donki/products/FAILED.txt
             echo "FAILED $out"
             return 0
           }
 
-          grab 11-kitkat.webp 'https://p19-oec-general-useast8.ttcdn-us.com/tos-useast8-i-rt0ujvrtvp-tx2/8edbd86046f94ff98beeae4c35b01a4b~tplv-fhlh96nyum-resize-webp%3A800%3A800.webp?dr=12190&from=2378011839&idc=useast5&ps=933b5bde&shcp=948674b7&shp=8dbd94bf&t=555f072d'
-          grab 15-kakinotane.jpg 'https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/0437/51e135cba214de71c9c12ed5d43d94065b0fe645024a6dca3043a1f3758f.jpg'
-          grab 19-shiroi.jpg 'https://cdn.store-assets.com/s/982339/i/61220021.jpg?width=1024'
-          grab 20-jagabee.jpg 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/402a39cd-2b82-448a-9ca6-517e2ff384e4/500x500.jpg'
-          grab 26-fino.jpg 'https://www.tsemporium.com/media/catalog/product/4/9/4901872837144_a.jpg'
-          grab 27-bathball.jpg 'https://cdn.askul.co.jp/img/product/3L1/U255089_3L1.jpg' 'https://r.r10s.jp/ran/img/1001/0004/525/636/250/477/10010004525636250477_1.jpg'
+          grab_image 04-ryukakusan.jpg \
+            'https://img06.weeecdn.com/item/image/757/249/3CCCDDB0121EF111-square.jpeg' \
+            'https://i5.walmartimages.com/asr/7baecb45-3f85-448e-8432-7237db7cfba3.e133c77083a4db0bff7c563ca1a8043d.jpeg' \
+            'https://cloudflare.lipscosme.com/image/a4cb419ed8da42d0667ea9e4-1676007909.png?auto=avif%2Cwebp&fio=1&orient=1&width=1200'
 
           echo '--- Failed files ---'
           cat assets/donki/products/FAILED.txt
 
-      - name: Commit downloaded assets
+      - name: Commit corrected asset
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/donki/products
+          git add assets/donki/products/04-ryukakusan.jpg assets/donki/products/FAILED.txt
           if git diff --cached --quiet; then
             echo 'No asset changes to commit'
           else
-            git commit -m 'Complete Donki product image assets'
+            git commit -m 'Fix Ryukakusan product image'
             git push origin HEAD:main
           fi
