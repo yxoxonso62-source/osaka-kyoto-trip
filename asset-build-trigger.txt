@@ -1,0 +1,2 @@
+Build Donki assets for v19 UI.
+Trigger: 2026-08-21 15:12 KST
