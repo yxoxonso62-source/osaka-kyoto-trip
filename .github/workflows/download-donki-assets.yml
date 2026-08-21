@@ -1,11 +1,6 @@
 name: Build Donki product assets
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - "final-itinerary.html"
-      - "asset-build-trigger.txt"
   workflow_dispatch:
 
 permissions:
@@ -13,45 +8,49 @@ permissions:
 
 jobs:
   download-assets:
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR branch
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: main
           fetch-depth: 0
 
       - name: Download product images
         shell: bash
         run: |
           set -u
-          mkdir -p assets/donki
-          rm -f assets/donki/final-itinerary.html.gz
+          mkdir -p assets/donki/products
+          rm -f assets/donki/products/*
+          : > assets/donki/products/FAILED.txt
 
           grab() {
             out="$1"; shift
             for url in "$@"; do
-              echo "Downloading $out"
-              if curl -fL --retry 2 --connect-timeout 10 --max-time 45 -A 'Mozilla/5.0' -e 'https://www.google.com/' "$url" -o "assets/donki/$out"; then
-                if [ -s "assets/donki/$out" ]; then return 0; fi
+              echo "Trying $out <- $url"
+              if curl -fL --retry 2 --connect-timeout 10 --max-time 45 -A 'Mozilla/5.0' -e 'https://www.google.com/' "$url" -o "assets/donki/products/$out"; then
+                if [ -s "assets/donki/products/$out" ]; then
+                  echo "OK $out"
+                  return 0
+                fi
               fi
+              rm -f "assets/donki/products/$out"
             done
-            echo "FAILED: $out"
-            rm -f "assets/donki/$out"
+            echo "$out" >> assets/donki/products/FAILED.txt
+            echo "FAILED $out"
             return 0
           }
 
           grab 01-ohta.png 'https://bluebox007.wisacdn.com/_data/attach/202504/15/7b66561d0d5df4054b395ed1de426124.png'
-          grab 02-cabagin.png 'https://www.kowakorea.com/upload/goods/img1/20240321225133_3602.png'
-          grab 03-wakamoto.jpg 'https://malljapan.net/data/mall/14/1/1369620260108175408.thumb.jpg'
-          grab 04-ryukakusan.webp 'https://before-images-item.croketglobal.net/item/thumbnail/65dd0b328262b3318303d987780b83f3.webp'
-          grab 05-roihi.png 'https://hanamarumart.us/cdn/shop/files/Screenshot2024-03-14at9.22.37PM.png?v=1710465804'
-          grab 06-salonpas.jpg 'https://img.danawa.com/prod_img/500000/241/226/img/36226241_1.jpg?_v=20251017045335'
-          grab 07-pair.jpg 'https://www.ekn.kr/mnt/file/202103/2021032401001166500049851.jpg'
-          grab 08-oronine.jpg 'https://img06.weeecdn.com/item/image/266/067/7E8BDBDFA469C539.png%21c750x0.jpeg'
-          grab 09-alinamin.png 'https://shuttlepeople.com/data/item/1500000037/thumb-7JWE66as64KY668EX7ZSM65s7Iqk1807KCV1_600x600.png'
-          grab 10-qp.jpg 'https://ecimg.cafe24img.com/pg954b87808485072/umcjapan032701/web/product/big/shop1_9080cbc93d28a3551ce33d58756ec1cd.jpg'
+          grab 02-cabagin.png 'https://www.kowakorea.com/upload/goods/img1/20240321225133_3602.png' 'https://youyoutime.jp/images/articles/big20260202cvnknl130213525112.jpg'
+          grab 03-wakamoto.jpg 'https://www.mtdrug.co.jp/upload/product/291-HDD.jpg' 'https://malljapan.net/data/mall/14/1/1369620260108175408.thumb.jpg'
+          grab 04-ryukakusan.jpg 'https://www.jhceshop.com/media/catalog/product/cache/5809d3fcace43b61578d548721d241da/P/G/PG320_210535_D_01_4987240210535_5.jpg' 'https://before-images-item.croketglobal.net/item/thumbnail/65dd0b328262b3318303d987780b83f3.webp'
+          grab 05-roihi.jpg 'https://oishiijapanstore.com/cdn/shop/files/8EB261C4-8A9F-4CA6-8DB0-A01967E8D8C4.jpg?v=1771429095&width=1445' 'https://hanamarumart.us/cdn/shop/files/Screenshot2024-03-14at9.22.37PM.png?v=1710465804'
+          grab 06-salonpas.png 'https://global-satudora.com/cdn/shop/files/4987188100325-3_e208acd2-7d16-407b-b867-a62d1ee5d14f.png?v=1736312729&width=1200' 'https://img.danawa.com/prod_img/500000/241/226/img/36226241_1.jpg?_v=20251017045335'
+          grab 07-pair.jpg 'https://namba.com.mx/cdn/shop/files/CAA14P.jpg?v=1766202354&width=416' 'https://www.everydayemall.com/cdn/shop/products/image__70308_480x.png?v=1619729975'
+          grab 08-oronine.jpg 'https://img06.weeecdn.com/description/image/682/524/2DF6B93CEF8DD48E.jpeg' 'https://img06.weeecdn.com/item/image/699/048/46EA00EEE6380F8A.jpeg%21c750x0.jpeg'
+          grab 09-alinamin.jpg 'https://d2l91jtvo396gr.cloudfront.net/item/38/38540/1.jpg' 'https://ebisujapan.com/cdn/shop/files/4987123145404_01_b187848f42976f3232671bee0a826419_1_1024x1024%402x.jpg?v=1723088058'
+          grab 10-qp.jpg 'https://ecimg.cafe24img.com/pg954b87808485072/umcjapan032701/web/product/big/shop1_30aae24af533136c9b47471a3d03f7c9.jpg'
           grab 11-kitkat.webp 'https://www.nestle.jp/sites/g/files/pydnoa331/files/styles/webp_image/public/2024-09/kitkat-matcha-green-tea-product.png.webp'
           grab 12-alfort.jpg 'https://www.bourbon.co.jp/product_file/file/%E3%82%A2%E3%83%AB%E3%83%95%E3%82%A9%E3%83%BC%E3%83%88%E3%83%9F%E3%83%8B%E3%83%81%E3%83%A7%E3%82%B3%E3%83%AC%E3%83%BC%E3%83%88%E6%96%9C.jpg'
           grab 13-orihiro.jpg 'https://image.auction.co.kr/origin/55/7a/97/557a977196.jpg'
@@ -62,33 +61,35 @@ jobs:
           grab 18-cupnoodle.png 'https://wafuu.com/cdn/shop/products/nissin-cup-noodle-78g-x-20-cups-made-in-japan-385724.png?v=1695256065'
           grab 19-shiroi.jpg 'https://japaninabox.jp/cdn/shop/files/shiroi-koibito-24-pieces-white-chocolate.jpg'
           grab 20-jagabee.jpg 'https://snackbar.mogushop.asia/cdn/shop/products/B093543_3292x.jpg?v=1637056173'
-          grab 21-kororo.jpg 'https://contents.lotteon.com/itemimage/20250520214943/LO/24/86/14/68/67/_2/48/61/46/86/8/LO2486146867_2486146868_1.jpg/dims/optimize/resizemc/400x400'
+          grab 21-kororo.jpg 'https://i5.walmartimages.com/seo/Japanese-UHA-Kororo-Gummy-Candy-Grape-Flavor-40g-Pack-of-6_afd8e9e5-7bd2-4059-b1f5-b18345dd8bfe.6dd44a0a842bf51c11fc2bcfa1e144ed.jpeg'
           grab 22-pocky.jpg 'https://contents.lotteon.com/itemimage/20251112075520/LO/24/31/49/27/12/_2/43/14/92/71/3/LO2431492712_2431492713_1.jpg'
           grab 23-calbee.jpg 'https://sitem.ssgcdn.com/23/88/06/item/1000633068823_i1_750.jpg'
           grab 24-hadalabo.png 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0014/A00000014455128ko.png?l=ko'
-          grab 25-biore.jpg 'https://shop3.daumcdn.net/shophow/p/L30855355846.jpg?opt=R500x500.q90&type=thumb&ut=20250321203001'
-          grab 26-fino.jpg 'https://shop4.daumcdn.net/thumb/R500x500/?fname=http%3A%2F%2Fshop4.daumcdn.net%2Fshophow%2Fp%2FB5262308177.jpg%3Fut%3D20260105181457'
+          grab 25-biore.jpg 'https://ebay.dykos.com/nexshop/beauty/biore/sunscreen/ar_uv50_watery_essence_70g/001.jpg'
+          grab 26-fino.jpg 'https://int.japanesetaste.com/cdn/shop/files/Shiseido-Fino-Premium-Touch-Hair-Mask-230g-1-2024-04-29T02_25_07.450Z.jpg?v=1746161268&width=1500'
           grab 27-bathball.jpg 'https://m.media-amazon.com/images/I/71PwusjKHsL._AC_SL1500_.jpg'
-          grab 28-dhc.png 'https://olivejapan.co.kr/web/product/big/202511/16debe71860db0811cb9fa123ec977c6.png'
-          grab 29-dove.jpg 'https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/81bf/2e44c584a1d1aa5d39c59bbb5297948910778bf2a865271b599f42eef682.jpg'
-          grab 30-donpen.jpg 'https://media.bunjang.co.kr/product/380701287_1_1767712533_w1200.jpg'
+          grab 28-dhc.jpg 'https://megapx-assets.dcard.tw/images/657fafc1-86b2-47b9-8d20-d4f974841262/640.jpeg'
+          grab 29-dove.jpg 'https://shimojima.jp/img/goods/Z/2502000046166.jpg' 'https://cloudflare.lipscosme.com/image/2025-09-26-9c546da5fa2bb035458cc99c.png?auto=avif%2Cwebp&fio=1&orient=1&width=430'
+          grab 30-donpen.jpg 'https://res.klook.com/image/upload/activities/bcqcvtvyivlgpghq1z2z.jpg'
           grab 31-onsen.jpg 'https://gd.image-qoo10.jp/li/030/572/7953572030.g_600-w-st_g.jpg'
-          grab 32-lenor.jpg 'https://i.ebayimg.com/images/g/Q8cAAOSwz-ldB7J~/s-l1200.jpg'
-          grab 33-kai.jpeg 'https://jgrab.sgp1.digitaloceanspaces.com/jgrab/229d880f-1037-49df-a896-9ff24e9c736c.jpeg'
-          grab 34-gatsby.jpg 'https://www.komeri.com/images/goods/020/230/09/2023009.jpg'
+          grab 32-lenor.jpg 'https://tshop.r10s.jp/at-life/cabinet/2021c/4987176098320.jpg?fitin=720%3A720' 'https://i.ebayimg.com/images/g/Q8cAAOSwz-ldB7J~/s-l1200.jpg'
+          grab 33-kai.jpg 'https://item-shopping.c.yimg.jp/i/n/benkyoudou_so-yumail-4901601268867' 'https://i.ebayimg.com/images/g/zvMAAOSwjFtm643r/s-l500.png'
+          grab 34-gatsby.webp 'https://todokujapan-world.com/cdn/shop/files/100_500x_f03293b5-9569-48ff-89d6-57558c6057ec.webp?v=1698386986&width=2048' 'https://www.komeri.com/images/goods/020/230/09/2023009.jpg'
           grab 35-jonetz.jpg 'https://data.mart-magazine.com/wp-content/uploads/2022/04/21191215/IMG_0515.jpg'
 
-          echo "Downloaded $(find assets/donki -type f | wc -l) asset files"
+          echo '--- Failed files ---'
+          cat assets/donki/products/FAILED.txt
+          echo "Successful files: $(find assets/donki/products -type f ! -name FAILED.txt | wc -l)"
 
-      - name: Commit downloaded assets to PR branch
+      - name: Commit downloaded assets
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/donki
+          git add assets/donki/products
           if git diff --cached --quiet; then
             echo 'No asset changes to commit'
           else
-            git commit -m 'Add Donki product image assets'
-            git push origin HEAD:${{ github.head_ref }}
+            git commit -m 'Store Donki product images locally'
+            git push origin HEAD:main
           fi
