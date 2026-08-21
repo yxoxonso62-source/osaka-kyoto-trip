@@ -1,0 +1,68 @@
+name: Download Donki product assets
+on:
+  push:
+    paths:
+      - ".github/workflows/download-donki-assets.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore v19 final itinerary
+        shell: bash
+        run: |
+          curl -fL https://raw.githubusercontent.com/yxoxonso62-source/osaka-kyoto-trip/main/assets/donki/final-itinerary.html.gz -o /tmp/final.html.gz
+          gzip -dc /tmp/final.html.gz > final-itinerary.html
+      - name: Download product images
+        shell: bash
+        run: |
+          set -u
+          mkdir -p assets/donki
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://rimage.gnst.jp/livejapan.com/public/article/detail/a/00/05/a0005768/img/ko/a0005768_parts_69b7b548710bc.png' -o assets/donki/ohta-isan.png
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://yoyojapanstore.com/cdn/shop/files/herbal-supplements-kowa-kyabejin-alpha-300-tablets-04-yoyojapanstore.jpg?v=1780176645' -o assets/donki/cabagin.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://down-ph.img.susercontent.com/file/sg-11134201-7rd65-lvy8be000j325e' -o assets/donki/wakamoto.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://gw.alicdn.com/imgextra/O1CN01YJc0Xz1JVA26LvVir_%21%216000000001033-0-yinhe.jpg' -o assets/donki/ryukakusan.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://i.ebayimg.com/images/g/-E8AAOSwurFniNxq/s-l1200.jpg' -o assets/donki/roihi.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://godomall.speedycdn.net/2fd2b2779a329c7554a00bd0cf62b823/goods/1000001274/image/detail/1000001274_detail_099.jpg' -o assets/donki/salonpas.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit%2Cfl_lossy%2Ch_1000%2Cw_500%2Cf_auto%2Cq_auto/12046023/909451_33573.png' -o assets/donki/pair-acne.png
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://img06.weeecdn.com/description/image/682/524/5F4B8D1565253020.jpeg' -o assets/donki/oronine.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://ebisujapan.com/cdn/shop/files/4987123145404_01_b187848f42976f3232671bee0a826419_1_1024x1024%402x.jpg?v=1723088058' -o assets/donki/alinamin.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://img06.weeecdn.com/description/image/996/934/3E2D6921F03F7E94.jpeg' -o assets/donki/qp-kowa.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://cdn.salla.sa/jGbEB/bcc99ff2-eef9-436e-b652-b4052b88dd2b-1000x1000-pViedjjioYlpb9LwrPGk9Slgd4kAZwkFczG80hv4.jpg' -o assets/donki/kitkat-matcha.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.bourbon.co.jp/product_file/file/%E3%82%A2%E3%83%AB%E3%83%95%E3%82%A9%E3%83%BC%E3%83%88%E3%83%9F%E3%83%8B%E3%83%81%E3%83%A7%E3%82%B3%E3%83%AC%E3%83%BC%E3%83%88%E6%96%9C.jpg' -o assets/donki/alfort.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://media.karousell.com/media/photos/products/2021/6/21/orihiro_konjac_jelly_pouch_130_1624243058_39aadb3b' -o assets/donki/orihiro.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://stat.ameba.jp/user_images/20220529/10/nonoichihoken/b2/b7/j/o1078144015124899435.jpg' -o assets/donki/ichiran.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://sitem.ssgcdn.com/15/20/25/item/1000014252015_i1_750.jpg' -o assets/donki/kakinotane.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://tuktukmart.co.uk/cdn/shop/files/IMG_3760_b9bf9d89-aaad-474b-91a1-a868d39c4add.jpg?v=1768499320' -o assets/donki/meiji-almond.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.napajapan.com/cdn/shop/products/Macadamia-Meiji.jpg?v=1644668824&width=1024' -o assets/donki/meiji-macadamia.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://media.nedigital.sg/fairprice/90208072_XL1_20260225090843_f6c851c8e68a8e3b561fdd950ff88bee.jpg' -o assets/donki/wasabi-peas.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://tshop.r10s.jp/matsukiyo/cabinet/d0035/4902105252482_1.jpg?fitin=720%3A720' -o assets/donki/nissin-cup.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.napajapan.com/cdn/shop/files/Shiroi-Koibito-Ishiya-12pc-3_grande.jpg?v=1684301458' -o assets/donki/shiroi-koibito.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://japan-snack.com/wp-content/uploads/jagabee-butter.jpeg' -o assets/donki/jagabee.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.nikankitchen.com/Images/Products/uha-kororo-gummy-muscat-40g.png' -o assets/donki/kororo.png
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.shadowanime.com/cdn/shop/products/Glico-Pocky-Sakura-Shitate-Cherry-Blossom-Limited-Edition-2.7-oz.jpg?v=1590797989' -o assets/donki/pocky-sakura.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://img06.weeecdn.com/item/image/191/343/3A85BE11C89E1BE7.jpeg%21c750x0.jpeg' -o assets/donki/calbee-chips.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.tanomail.com/imgcv/product/66/6622897_01.jpg' -o assets/donki/hada-labo.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://down-sg.img.susercontent.com/file/cn-11134208-7r98o-lt67u0bghf3h30' -o assets/donki/biore-uv.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://int.japanesetaste.com/cdn/shop/files/Shiseido-Fino-Premium-Touch-Hair-Mask-230g-1-2024-04-29T02_25_07.450Z.jpg?v=1746161268&width=1500' -o assets/donki/fino.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.blippo.com/cdn/shop/files/20240214-1.jpg?v=1707973303' -o assets/donki/sanrio-bathball.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://sundrug-online.com/cdn/shop/files/4511413302163.jpg' -o assets/donki/dhc-lip.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://shimojima.jp/img/goods/Z/2502000046166.jpg' -o assets/donki/dove-scrub.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://res.klook.com/image/upload/activities/bcqcvtvyivlgpghq1z2z.jpg' -o assets/donki/donpen.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/359150666429618-ed86e786-b686-4fad-b262-4dba2e666a12.jpg' -o assets/donki/onsen-bath.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://images-fe.ssl-images-amazon.com/images/I/41gvAf2MotL._SL500_.jpg' -o assets/donki/lenor.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://www.j-grab.com/cdn/shop/files/Nail_Clipper_Tsumekiri_KAI_Seki_Magoroku_Type_101M_HC1800_-_Made_in_Japan-1.jpg?v=1766563123' -o assets/donki/kai-nail.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://ic4-a.wowma.net/mis/gr/135/image.wowma.jp/45682042/i/f/4902806112733_1.jpg' -o assets/donki/gatsby.jpg
+          curl -fL --retry 3 -A 'Mozilla/5.0' 'https://nksakelife.com/wp-content/uploads/2024/08/img_1306-1.jpg' -o assets/donki/jonetz.jpg
+      - name: Commit assets
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/donki final-itinerary.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Restore v19 itinerary UI and add Donki images'
+          git push
