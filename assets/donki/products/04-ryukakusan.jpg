@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JHC | 網上旗艦店 - 您的生活百貨首選</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- 应用配置文件（打包后可修改）-->
+    <script src="/config.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBZtlHfG1K8JOw3K0mxSN8KsK9IFuOSCw&libraries=places"
+        async defer></script>
+
+    <script src="/js/tailwind.js"></script>
+
+    <!-- Google Tag Manager -->
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-PPLWWSP');
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Emarsys Scarab -->
+    <script type="text/javascript">
+        var ScarabQueue = ScarabQueue || [];
+        (function (id) {
+            if (document.getElementById(id)) return;
+            var js = document.createElement('script'); js.id = id;
+            js.src = '//cdn.scarabresearch.com/js/19C99E9F397D6E53/scarab-v2.js';
+            var fs = document.getElementsByTagName('script')[0];
+            fs.parentNode.insertBefore(js, fs);
+        })('scarab-js-api');
+    </script>
+    <!-- End Emarsys Scarab -->
+
+
+
+    <script>
+        tailwind.config = {
+            theme: {
+                // container: {
+                //     center: true,
+                //     padding: '1rem',
+                //     screens: {
+                //         sm: '640px',
+                //         md: '768px',
+                //         lg: '1024px',
+                //         xl: '1200px',
+                //         '2xl': '1200px',
+                //     },
+                // },
+                fontSize: {
+                    'xs': ['0.9375rem', { lineHeight: '1.375rem' }],
+                    'sm': ['1rem', { lineHeight: '1.5rem' }],
+                    'base': ['1.125rem', { lineHeight: '1.625rem' }],
+                    'lg': ['1.25rem', { lineHeight: '1.875rem' }],
+                    'xl': ['1.375rem', { lineHeight: '1.875rem' }],
+                    '2xl': ['1.625rem', { lineHeight: '2.125rem' }],
+                    '3xl': ['2rem', { lineHeight: '2.375rem' }],
+                    '4xl': ['2.5rem', { lineHeight: '2.75rem' }],
+                    '5xl': ['3.25rem', { lineHeight: '1' }],
+                }
+            }
+        }
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+                n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s);
+        }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1258209291480401');
+        fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
+    <!-- Local Font Awesome -->
+    <link rel="stylesheet" href="/css/fontawesome.min.css">
+    <!-- Local Noto Sans TC -->
+    <link rel="stylesheet" href="/css/noto-sans-tc.css">
+    <style>
+        :root {
+            --jhc-blue: #005696;
+            --jhc-yellow: #FEDD00;
+            --jhc-red: #E1251B;
+            --jhc-bg: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 16px;
+            background-color: var(--jhc-bg);
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 响应式字体大小 */
+        @media (min-width: 768px) {
+            body {
+                font-size: 17px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                font-size: 18px;
+            }
+        }
+
+        .jhc-blue {
+            background-color: var(--jhc-blue);
+        }
+
+        .jhc-text-blue {
+            color: var(--jhc-blue);
+        }
+
+        .jhc-yellow {
+            background-color: var(--jhc-yellow);
+        }
+
+        .jhc-text-red {
+            color: var(--jhc-red);
+        }
+
+        .jhc-border-blue {
+            border-color: var(--jhc-blue);
+        }
+
+        .jhc-border-yellow {
+            border-color: var(--jhc-yellow);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .promo-stripe {
+            background: repeating-linear-gradient(45deg,
+                    var(--jhc-yellow),
+                    var(--jhc-yellow) 10px,
+                    #fcd100 10px,
+                    #fcd100 20px);
+        }
+
+        .retail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        @media (min-width: 640px) {
+            .retail-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .retail-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .retail-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+    </style>
+
+  <script type="module" crossorigin src="/assets/index-Do72fHNn.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BOLCjmTw.css">
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PPLWWSP" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <noscript>
+        <img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1258209291480401&ev=PageView&noscript=1" />
+    </noscript>
+</body>
+
+</html>
